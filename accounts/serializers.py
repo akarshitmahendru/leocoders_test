@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate
 from rest_framework import serializers
-from accounts.models import User
+from accounts.models import User, UserAppointmentModel
 import django.contrib.auth.password_validation as validators
 
 
@@ -71,3 +71,37 @@ class UserGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('id', 'full_name', 'email')
+
+
+class UserAppointmentPostSerializer(serializers.ModelSerializer):
+
+    start_timestamp = serializers.DateTimeField(
+        input_formats=["%Y-%m-%d %H:%M"],
+        required=True)
+    end_timestamp = serializers.DateTimeField(
+        input_formats=["%Y-%m-%d %H:%M"],
+        required=True
+    )
+
+    def validate(self, attrs):
+        start_timestamp = attrs.get('start_timestamp')
+        end_timestamp = attrs.get('end_timestamp')
+        duration_diff = (end_timestamp - start_timestamp).total_seconds()/60
+        if duration_diff > 60:
+            raise serializers.ValidationError(
+                f"Appointment can't be booked for time slot greater than 1 hour"
+            )
+        else:
+            return attrs
+
+    class Meta:
+        model = UserAppointmentModel
+        fields = ('start_timestamp', 'end_timestamp')
+
+
+class UserAppointmentGetSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserAppointmentModel
+        fields = "__all__"
+

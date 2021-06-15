@@ -10,5 +10,6 @@ urlpatterns = [
     url(r'^registration/$', apis.RegistrationAPI.as_view(), name='register'),
     url(r'^login/$', apis.LoginView.as_view(), name='login'),
     url(r'^user/$', apis.UserDetailsAPI.as_view(), name='users'),
+    url(r'^book-appointment/$', apis.UserAppointmentAPI.as_view(), name='appointment'),
 
 ]

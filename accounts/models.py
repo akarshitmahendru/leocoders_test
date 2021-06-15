@@ -85,3 +85,30 @@ class User(AbstractBaseUser, PermissionsMixin):
       not store the user's real name, we return their username instead.
       """
         return self.full_name
+
+
+class UserAppointmentModel(models.Model):
+    user = models.ForeignKey(
+        User,
+        related_name="user_appointments",
+        on_delete=models.CASCADE,
+        verbose_name='User Name',
+        null=True,
+        blank=True
+    )
+    start_timestamp = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    end_timestamp = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+    appointment_day = models.CharField(
+        null=True,
+        blank=True,
+        max_length=25
+    )
+
+    def __str__(self):
+        return self.user.full_name
